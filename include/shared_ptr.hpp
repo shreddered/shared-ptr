@@ -70,6 +70,7 @@ public:
     std::size_t use_count() const {
         return _cb->refCount;
     }
+
 private:
     inline void invalidate() noexcept {
         _ptr = nullptr;
