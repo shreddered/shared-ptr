@@ -24,14 +24,18 @@ string(APPEND CMAKE_CXX_FLAGS " -pedantic -Werror -Wall -Wextra")
 string(APPEND CMAKE_CXX_FLAGS " -Wno-unused-command-line-argument")
 string(APPEND CMAKE_CXX_FLAGS " -Wshadow -Wnon-virtual-dtor")
 
+
 hunter_add_package(GTest)
 find_package(GTest CONFIG REQUIRED)
 
 # shared ptr
-add_library(shared_ptr INTERFACE)
+add_library(shared_ptr
+    ${CMAKE_CURRENT_SOURCE_DIR}/sources/shared_ptr.cpp
+)
 
-target_link_libraries(shared_ptr INTERFACE
-    ${CMAKE_CURRENT_SOURCE_DIR}/include/
+target_link_libraries(shared_ptr PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>
+    $<INSTALL_INTERFACE:include/>
 )
 
 # tests
