@@ -29,11 +29,9 @@ hunter_add_package(GTest)
 find_package(GTest CONFIG REQUIRED)
 
 # shared ptr
-add_library(shared_ptr
-    ${CMAKE_CURRENT_SOURCE_DIR}/sources/shared_ptr.cpp
-)
+add_library(shared_ptr INTERFACE)
 
-target_link_libraries(shared_ptr PUBLIC
+target_include_directories(shared_ptr INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>
     $<INSTALL_INTERFACE:include/>
 )
