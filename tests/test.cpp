@@ -14,7 +14,7 @@ struct Student {
 };
 
 TEST(SharedPtr, CopyMove) {
-    SharedPtr<Student> ptr = new Student("Dmitry", "IU8-31");
+    SharedPtr<Student> ptr(new Student("Dmitry", "IU8-31"));
     // copy ctor
     auto ptr1 = ptr;
     SharedPtr<Student> ptr3;
@@ -27,7 +27,7 @@ TEST(SharedPtr, CopyMove) {
 }
 
 TEST(SharedPtr, use_count) {
-    SharedPtr<Student> ptr = new Student("Dmitry", "IU8-31"),
+    SharedPtr<Student> ptr(new Student("Dmitry", "IU8-31")),
                        ptr1 = ptr;
     // two smart pointers
     EXPECT_EQ(ptr.use_count(), 2);
@@ -40,7 +40,7 @@ TEST(SharedPtr, use_count) {
 }
 
 TEST(SharedPtr, Operators) {
-    SharedPtr<Student> ptr = new Student("Dmitry", "IU8-31");
+    SharedPtr<Student> ptr(new Student("Dmitry", "IU8-31"));
     EXPECT_TRUE(ptr);
     Student s(*ptr);
     EXPECT_EQ(s.name, "Dmitry");
