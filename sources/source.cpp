@@ -1,3 +1,3 @@
-// Copyright 2018 Your Name <your_email>
+// Copyright 2020 Dmitry Kalinin <x.shreddered.x@gmail.com
 
 #include <header.hpp>
