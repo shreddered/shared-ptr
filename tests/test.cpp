@@ -1,4 +1,4 @@
-// Copyright 2020 Dmitry Kalinin <x.shreddered.x@gmail.com
+// Copyright 2020 Dmitry Kalinin <x.shreddered.x@gmail.com>
 
 #include <gtest/gtest.h>
 
