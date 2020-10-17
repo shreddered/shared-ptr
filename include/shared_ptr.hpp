@@ -22,13 +22,11 @@ public:
     virtual ~SharedPtr() noexcept {
         if (_cb) {
             _cb->release();
-            if (_cb->refCount) {
-                delete _cb;
-            }
         }
     }
     SharedPtr& operator=(const SharedPtr& other) {
         if (this != &other) {
+            reset();
             _ptr = other._ptr;
             _cb = other._cb;
             if (_cb) {
@@ -38,9 +36,13 @@ public:
         return *this;
     }
     SharedPtr& operator=(SharedPtr&& other) {
-        _ptr = other._ptr;
-        _cb = other._cb;
-        other.invalidate();
+        if (this != &other) {
+            reset();
+            _ptr = other._ptr;
+            _cb = other._cb;
+            other.invalidate();
+        }
+        return *this;
     }
     operator bool() const {
         return _ptr != nullptr;
@@ -54,16 +56,15 @@ public:
     T* get() {
         return _ptr;
     }
-    void reset() {
+    void reset() noexcept {
         SharedPtr<T>().swap(*this);
     }
     void reset(T* ptr) {
         SharedPtr<T>(ptr).swap(*this);
     }
-    void swap(SharedPtr& ptr) {
-        SharedPtr tmp = std::move(ptr);
-        ptr = std::move(*this);
-        *this = std::move(tmp);
+    void swap(SharedPtr& other) {
+        std::swap(_ptr, other._ptr);
+        std::swap(_cb, other._cb);
     }
     std::size_t use_count() const {
         return _cb->refCount;
@@ -82,10 +83,11 @@ template<typename T>
 struct SharedPtr<T>::ControlBlock final {
     std::atomic_size_t refCount;
     std::atomic<T*> ptr;
-    explicit ControlBlock(T* _ptr) : ptr(_ptr), refCount(1) {}
+    explicit ControlBlock(T* _ptr) : refCount(1), ptr(_ptr) {}
     inline void release() {
         if(--refCount == 0) {
             delete ptr;
+            delete this;
         }
     }
 }; // struct SharedPtr::ControlBlock
