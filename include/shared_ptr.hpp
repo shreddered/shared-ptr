@@ -22,7 +22,9 @@ public:
     virtual ~SharedPtr() noexcept {
         if (_cb) {
             _cb->release();
-            delete _cb;
+            if (_cb->refCount) {
+                delete _cb;
+            }
         }
     }
     SharedPtr& operator=(const SharedPtr& other) {
