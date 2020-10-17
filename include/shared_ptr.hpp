@@ -5,12 +5,13 @@
 
 #include <atomic>
 #include <cstdint>
+#include <utility>
 
 template<typename T>
 class SharedPtr {
 public:
     SharedPtr() : _ptr(nullptr), _cb(nullptr) {}
-    SharedPtr(T* ptr) : _ptr(ptr), _cb(new ControlBlock(ptr)) {}
+    explicit SharedPtr(T* ptr) : _ptr(ptr), _cb(new ControlBlock(ptr)) {}
     SharedPtr(const SharedPtr& other) : _ptr(other._ptr), _cb(other._cb) {
         if (_cb) {
             ++_cb->refCount;
@@ -85,7 +86,7 @@ struct SharedPtr<T>::ControlBlock final {
     std::atomic<T*> ptr;
     explicit ControlBlock(T* _ptr) : refCount(1), ptr(_ptr) {}
     inline void release() {
-        if(--refCount == 0) {
+        if (--refCount == 0) {
             delete ptr;
             delete this;
         }
