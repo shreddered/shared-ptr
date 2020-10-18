@@ -82,7 +82,7 @@ struct SharedPtr<T>::ControlBlock final {
     std::atomic<T*> ptr;
     explicit ControlBlock(T* _ptr) : refCount(1), ptr(_ptr) {}
     inline void release() {
-        if (--refCount == 0) {
+        if (refCount.fetch_sub(1) == 1) {
             delete ptr;
         }
     }
