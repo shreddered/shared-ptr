@@ -14,7 +14,7 @@ public:
     explicit SharedPtr(T* ptr) : _ptr(ptr), _cb(new ControlBlock(ptr)) {}
     SharedPtr(const SharedPtr& other) : _ptr(other._ptr), _cb(other._cb) {
         if (_cb) {
-            ++_cb->refCount;
+            _cb->refCount.fetch_add(1);
         }
     }
     SharedPtr(SharedPtr&& other) : _ptr(other._ptr), _cb(other._cb) {
