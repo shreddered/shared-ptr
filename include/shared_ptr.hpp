@@ -27,21 +27,13 @@ public:
     }
     SharedPtr& operator=(const SharedPtr& other) {
         if (this != &other) {
-            reset();
-            _ptr = other._ptr;
-            _cb = other._cb;
-            if (_cb) {
-                ++_cb->refCount;
-            }
+            SharedPtr<T>(other).swap(*this);
         }
         return *this;
     }
     SharedPtr& operator=(SharedPtr&& other) {
         if (this != &other) {
-            reset();
-            _ptr = other._ptr;
-            _cb = other._cb;
-            other.invalidate();
+            SharedPtr<T>(other).swap(*this);
         }
         return *this;
     }
