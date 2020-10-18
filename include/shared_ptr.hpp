@@ -23,6 +23,9 @@ public:
     virtual ~SharedPtr() noexcept {
         if (_cb) {
             _cb->release();
+            if (_cb->refCount == 0) {
+                delete _cb;
+            }
         }
     }
     SharedPtr& operator=(const SharedPtr& other) {
@@ -81,7 +84,6 @@ struct SharedPtr<T>::ControlBlock final {
     inline void release() {
         if (--refCount == 0) {
             delete ptr;
-            delete this;
         }
     }
 }; // struct SharedPtr::ControlBlock
