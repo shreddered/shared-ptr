@@ -63,7 +63,7 @@ public:
         std::swap(_cb, other._cb);
     }
     std::size_t use_count() const {
-        return (_cb) ? _cb->refCount : 0;
+        return (_cb) ? static_cast<std::size_t>(_cb->refCount) : 0;
     }
 
 private:
