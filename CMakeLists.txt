@@ -6,16 +6,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 option(BUILD_COVERAGE "Build coverage" OFF)
 
 set(
-	HUNTER_CACHE_SERVERS
-	"https://github.com/bmstu-iu8-cpp-sem-3/hunter-cache"
-	CACHE STRING "Default cache server"
+  HUNTER_CACHE_SERVERS
+  "https://github.com/bmstu-iu8-cpp-sem-3/hunter-cache"
+  CACHE STRING "Default cache server"
 )
 
 include("tools/gate/cmake/HunterGate.cmake")
 
 HunterGate(
-	URL "https://github.com/cpp-pm/hunter/archive/v0.23.218.tar.gz"
-	SHA1 "9a3594a61227967fb92159339ba326701b287b19"
+  URL "https://github.com/cpp-pm/hunter/archive/v0.23.218.tar.gz"
+  SHA1 "9a3594a61227967fb92159339ba326701b287b19"
 )
 
 
@@ -32,13 +32,13 @@ find_package(GTest CONFIG REQUIRED)
 add_library(shared_ptr INTERFACE)
 
 target_include_directories(shared_ptr INTERFACE
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>
-    $<INSTALL_INTERFACE:include/>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/>
+  $<INSTALL_INTERFACE:include/>
 )
 
 # tests
 add_executable(tests
-	${CMAKE_CURRENT_SOURCE_DIR}/tests/test.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/tests/test.cpp
 )
 
 target_link_libraries(tests GTest::main shared_ptr)
@@ -47,10 +47,10 @@ enable_testing()
 add_test(NAME unit_tests COMMAND tests) 
 
 if(BUILD_COVERAGE)
-	set(ENABLE_COVERAGE ON CACHE BOOL "Enable coverage build." FORCE)
-	list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-	find_package(codecov)
-	add_coverage(tests)
-	list(APPEND LCOV_REMOVE_PATTERNS "'${PROJECT_SOURCE_DIR}/tests/*'")
-	coverage_evaluate()
+  set(ENABLE_COVERAGE ON CACHE BOOL "Enable coverage build." FORCE)
+  list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+  find_package(codecov)
+  add_coverage(tests)
+  list(APPEND LCOV_REMOVE_PATTERNS "'${PROJECT_SOURCE_DIR}/tests/*'")
+  coverage_evaluate()
 endif()
