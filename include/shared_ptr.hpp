@@ -21,11 +21,9 @@ public:
         other.invalidate();
     }
     virtual ~SharedPtr() noexcept {
-        if (_cb) {
-            _cb->release();
-            if (_cb->refCount == 0) {
-                delete _cb;
-            }
+        if (_cb && _cb->fetch_sub(1) == 1) {
+            delete _ptr;
+            delete _cb;
         }
     }
     SharedPtr& operator=(const SharedPtr& other) {
@@ -76,16 +74,8 @@ private:
     ControlBlock* _cb;
 }; // class SharedPtr
 
-template<typename T>
 struct SharedPtr<T>::ControlBlock final {
     std::atomic_size_t refCount;
-    std::atomic<T*> ptr;
-    explicit ControlBlock(T* _ptr) : refCount(1), ptr(_ptr) {}
-    inline void release() {
-        if (refCount.fetch_sub(1) == 1) {
-            delete ptr;
-        }
-    }
 }; // struct SharedPtr::ControlBlock
 
 #endif // INCLUDE_SHARED_PTR_HPP_
