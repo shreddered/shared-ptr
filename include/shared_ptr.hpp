@@ -77,6 +77,7 @@ private:
 template<typename T>
 struct SharedPtr<T>::ControlBlock final {
     std::atomic_size_t refCount;
+    ControlBlock() : refCount(1) {}
 }; // struct SharedPtr::ControlBlock
 
 #endif // INCLUDE_SHARED_PTR_HPP_
