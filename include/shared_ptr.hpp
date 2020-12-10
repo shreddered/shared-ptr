@@ -11,7 +11,7 @@ template<typename T>
 class SharedPtr {
 public:
     SharedPtr() : _ptr(nullptr), _cb(nullptr) {}
-    explicit SharedPtr(T* ptr) : _ptr(ptr), _cb(new ControlBlock(ptr)) {}
+    explicit SharedPtr(T* ptr) : _ptr(ptr), _cb(new ControlBlock) {}
     SharedPtr(const SharedPtr& other) : _ptr(other._ptr), _cb(other._cb) {
         if (_cb) {
             _cb->refCount.fetch_add(1);
@@ -21,7 +21,7 @@ public:
         other.invalidate();
     }
     virtual ~SharedPtr() noexcept {
-        if (_cb && _cb->fetch_sub(1) == 1) {
+        if (_cb && _cb->refCount.fetch_sub(1) == 1) {
             delete _ptr;
             delete _cb;
         }
@@ -74,6 +74,7 @@ private:
     ControlBlock* _cb;
 }; // class SharedPtr
 
+template<typename T>
 struct SharedPtr<T>::ControlBlock final {
     std::atomic_size_t refCount;
 }; // struct SharedPtr::ControlBlock
