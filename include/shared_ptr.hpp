@@ -18,7 +18,7 @@ public:
         }
     }
     SharedPtr(SharedPtr&& other) : _ptr(other._ptr), _cb(other._cb) {
-        other.invalidate();
+        other.clear();
     }
     virtual ~SharedPtr() noexcept {
         if (_cb && _cb->refCount.fetch_sub(1) == 1) {
@@ -67,7 +67,7 @@ public:
     }
 
 private:
-    inline void invalidate() noexcept {
+    inline void clear() noexcept {
         _ptr = nullptr;
         _cb = nullptr;
     }
