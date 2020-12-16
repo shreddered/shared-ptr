@@ -22,7 +22,9 @@ public:
     }
     virtual ~SharedPtr() noexcept {
         if (_cb && _cb->refCount.fetch_sub(1) == 1) {
-            delete _ptr;
+            if (_ptr) {
+                delete _ptr;
+            }
             delete _cb;
         }
     }
